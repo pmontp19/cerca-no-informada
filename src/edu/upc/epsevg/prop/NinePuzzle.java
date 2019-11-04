@@ -35,9 +35,8 @@ public class NinePuzzle {
 
     NinePuzzle(NinePuzzle p) {
         puzzle = p.puzzle;
+        this.id = nextId++;
     }
-    
-    
 
     public int getId() {
         return id;
@@ -48,10 +47,10 @@ public class NinePuzzle {
     }
     
     private int[] find0 () {
-        int[] posicio = null;
+        int[] posicio = new int[2];
         boolean trobat = false;
         for (int i=0; i<3 && !trobat; i++) {
-            for (int j=0; j<3 && !trobat; i++) {
+            for (int j=0; j<3 && !trobat; j++) {
                 if (this.puzzle[i][j] == 0) {
                     posicio[0] = i;
                     posicio[1] = j;
@@ -120,8 +119,39 @@ public class NinePuzzle {
 
     public ArrayList<NinePuzzle> expand() {
         ArrayList<NinePuzzle> LF = new ArrayList<>();
-        for (int i=0; i<this.possibleMoves(); i++) {
-            
+        int[] pos = this.find0();
+        int temp;
+        // move up
+        if (pos[1]-1 < -1) {
+            NinePuzzle p = new NinePuzzle(this);
+            temp = p.puzzle[pos[0]][pos[1]-1];
+            p.puzzle[pos[0]][pos[1]-1] = 0;
+            p.puzzle[pos[0]][pos[1]] = temp;
+            LF.add(p);
+        }
+        // move down
+        if (pos[1]+1 < 3) {
+            NinePuzzle p = new NinePuzzle(this);
+            temp = p.puzzle[pos[0]][pos[1]+1];
+            p.puzzle[pos[0]][pos[1]+1] = 0;
+            p.puzzle[pos[0]][pos[1]] = temp;
+            LF.add(p);
+        }
+        // move left
+        if (pos[0]-1 < -1) {
+            NinePuzzle p = new NinePuzzle(this);
+            temp = p.puzzle[pos[0]-1][pos[1]];
+            p.puzzle[pos[0]-1][pos[1]] = 0;
+            p.puzzle[pos[0]][pos[1]] = temp;
+            LF.add(p);
+        }
+        // move right
+        if (pos[0]+1 < 3) {
+            NinePuzzle p = new NinePuzzle(this);
+            temp = p.puzzle[pos[0]+1][pos[1]];
+            p.puzzle[pos[0]+1][pos[1]] = 0;
+            p.puzzle[pos[0]][pos[1]] = temp;
+            LF.add(p);
         }
         return LF;
     }
@@ -137,6 +167,10 @@ public class NinePuzzle {
         }
         s += "</html>";
         return s;
+    }
+
+    ArrayList<NinePuzzle> expandir() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
