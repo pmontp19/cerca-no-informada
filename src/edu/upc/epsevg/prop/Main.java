@@ -42,12 +42,12 @@ public class Main {
         NinePuzzle.resetIds();
         //----------------------------------------------------------------------------------------------
         // puzzle amb solució de 5 moviments
-        //NinePuzzle start = new NinePuzzle( new int[]{1, 2, 3, 4, 5, 0, 6, 7, 8});
-        //NinePuzzle goal = new NinePuzzle(new int[]{1, 3, 5, 4, 2, 8, 6, 7, 0});
+        NinePuzzle start = new NinePuzzle( new int[]{1, 2, 3, 4, 5, 0, 6, 7, 8});
+        NinePuzzle goal = new NinePuzzle(new int[]{1, 3, 5, 4, 2, 8, 6, 7, 0});
         //----------------------------------------------------------------------------------------------
         // puzzle amb solució de 31 moviments
-        NinePuzzle start = new NinePuzzle(new int[]{8, 6, 7, 2, 5, 4, 3, 0, 1}); 
-        NinePuzzle goal = new NinePuzzle(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 0});
+        //NinePuzzle start = new NinePuzzle(new int[]{8, 6, 7, 2, 5, 4, 3, 0, 1}); 
+        //NinePuzzle goal = new NinePuzzle(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 0});
 
         DelegateTree<NinePuzzle, Integer> g = new DelegateTree<>();
         g.addVertex(start);
@@ -68,6 +68,7 @@ public class Main {
             actual = LNO.get(0);
             LNO.remove(0);
             LNT.add(actual);
+            System.out.println("es solucio "+actual.isSolucio(goal));
             if (actual.isSolucio(goal)) {
                 solucio = true;
             } else {

@@ -45,76 +45,20 @@ public class NinePuzzle {
     public boolean isSolucio(NinePuzzle solucio) {
         return Arrays.deepEquals(this.puzzle, solucio.puzzle);
     }
-    
-    private int[] find0 () {
+
+    private int[] find0() {
         int[] posicio = new int[2];
         boolean trobat = false;
-        for (int i=0; i<3 && !trobat; i++) {
-            for (int j=0; j<3 && !trobat; j++) {
+        for (int i = 0; i < 3 && !trobat; i++) {
+            for (int j = 0; j < 3 && !trobat; j++) {
                 if (this.puzzle[i][j] == 0) {
-                    posicio[0] = i;
-                    posicio[1] = j;
+                    posicio[0] = j;
+                    posicio[1] = i;
                     trobat = true;
                 }
             }
         }
         return posicio;
-    }
-    
-    private int possibleMoves() {
-        int[] pos = this.find0();
-        int moves = 0;
-        // move up
-        if (pos[0]-- < -1) {
-            moves++;
-        }
-        // move down
-        if (pos[0]++ < 3) {
-            moves++;
-        }
-        // move left
-        if (pos[1]-- < -1) {
-            moves++;
-        }
-        // move right
-        if (pos[1]++ < 3) {
-            moves++;
-        }
-        return moves;
-    }
-    
-        private int move() {
-        int[] pos = this.find0();
-        int moves = 0;
-        // move up
-        if (pos[0]-- < -1) {
-            moves++;
-        }
-        // move down
-        if (pos[0]++ < 3) {
-            moves++;
-        }
-        // move left
-        if (pos[1]-- < -1) {
-            moves++;
-        }
-        // move right
-        if (pos[1]++ < 3) {
-            moves++;
-        }
-        return moves;
-    }
-
-    
-    // si trobem el 0 en aquestes posicions podem moure amunt
-    private boolean moveUp(NinePuzzle p) {
-        boolean trobat = false;
-        for (int i=1; i<3 && !trobat; i++) {
-            for (int j=0; j<3 && !trobat; i++) {
-                if (p.puzzle[i][j] == 0) trobat = true;
-            }
-        }
-        return trobat;
     }
 
     public ArrayList<NinePuzzle> expand() {
@@ -122,40 +66,42 @@ public class NinePuzzle {
         int[] pos = this.find0();
         int temp;
         // move up
-        if (pos[1]-1 < -1) {
+        if (pos[1]-1 > -1) {
             NinePuzzle p = new NinePuzzle(this);
-            temp = p.puzzle[pos[0]][pos[1]-1];
-            p.puzzle[pos[0]][pos[1]-1] = 0;
-            p.puzzle[pos[0]][pos[1]] = temp;
+            p.puzzle[pos[0]][pos[1]] = p.puzzle[pos[0]][pos[1] - 1];
+            p.puzzle[pos[0]][pos[1] - 1] = 0;
             LF.add(p);
+            System.out.println(p);
         }
         // move down
         if (pos[1]+1 < 3) {
             NinePuzzle p = new NinePuzzle(this);
-            temp = p.puzzle[pos[0]][pos[1]+1];
-            p.puzzle[pos[0]][pos[1]+1] = 0;
-            p.puzzle[pos[0]][pos[1]] = temp;
+            p.puzzle[pos[0]][pos[1]] = p.puzzle[pos[0]][pos[1] + 1];
+            p.puzzle[pos[0]][pos[1] + 1] = 0;
             LF.add(p);
+            System.out.println(p);
+
         }
         // move left
-        if (pos[0]-1 < -1) {
+        if (pos[0]-1 > -1) {
             NinePuzzle p = new NinePuzzle(this);
-            temp = p.puzzle[pos[0]-1][pos[1]];
-            p.puzzle[pos[0]-1][pos[1]] = 0;
-            p.puzzle[pos[0]][pos[1]] = temp;
+            p.puzzle[pos[0]][pos[1]] = p.puzzle[pos[0] - 1][pos[1]];
+            p.puzzle[pos[0] - 1][pos[1]] = 0;
             LF.add(p);
+            System.out.println(p);
+
         }
         // move right
         if (pos[0]+1 < 3) {
             NinePuzzle p = new NinePuzzle(this);
-            temp = p.puzzle[pos[0]+1][pos[1]];
-            p.puzzle[pos[0]+1][pos[1]] = 0;
-            p.puzzle[pos[0]][pos[1]] = temp;
+            p.puzzle[pos[0]][pos[1]] = p.puzzle[pos[0] + 1][pos[1]];
+            p.puzzle[pos[0] + 1][pos[1]] = 0;
             LF.add(p);
+            System.out.println(p);
         }
         return LF;
     }
-    
+
     @Override
     public String toString() {
         String s = "<html>id=" + id + "<br/>\n";
@@ -167,10 +113,6 @@ public class NinePuzzle {
         }
         s += "</html>";
         return s;
-    }
-
-    ArrayList<NinePuzzle> expandir() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
