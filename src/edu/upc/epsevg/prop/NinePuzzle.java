@@ -13,13 +13,15 @@ import java.util.List;
  * @author Usuari
  */
 public class NinePuzzle implements Comparable<NinePuzzle> {
-    private static int nextId=0;
-    public static void resetIds(){
-        nextId=2;
+
+    private static int nextId = 0;
+
+    public static void resetIds() {
+        nextId = 2;
     }
     private int id;
-    private int depth=0;
-    
+    private int depth = 0;
+
     public int getId() {
         return id;
     }
@@ -28,42 +30,47 @@ public class NinePuzzle implements Comparable<NinePuzzle> {
         return depth;
     }
 
-    private static final int N=3;
+    private static final int N = 3;
     public static final int EMPTY = -1;
     private int emptyF, emptyC;
     public int[][] puzzle;
-    
-    public NinePuzzle(int[] positions){
+    NinePuzzle solucio;
+
+    public NinePuzzle(int[] positions, NinePuzzle solucio) {
+        this.solucio = solucio;
         this.id = ++nextId;
-        puzzle = new int[N][N];      
-        if(positions.length!=N*N) throw new RuntimeException("Mida de puzzle incorrecta");
-        for(int i=0;i<positions.length;i++) {
-            puzzle[i/N][i%N]=positions[i];
-            if(positions[i]<1||positions[i]>8) {
-                emptyF = i/N;
-                emptyC = i%N;
+        puzzle = new int[N][N];
+        if (positions.length != N * N) {
+            throw new RuntimeException("Mida de puzzle incorrecta");
+        }
+        for (int i = 0; i < positions.length; i++) {
+            puzzle[i / N][i % N] = positions[i];
+            if (positions[i] < 1 || positions[i] > 8) {
+                emptyF = i / N;
+                emptyC = i % N;
             }
         }
     }
-    
-    public NinePuzzle(NinePuzzle other){
+
+    public NinePuzzle(NinePuzzle other) {
+        this.solucio = other.solucio;
         this.id = ++nextId;
-        puzzle = new int[N][N];      
+        puzzle = new int[N][N];
         emptyF = other.emptyF;
         emptyC = other.emptyC;
-        depth =  other.depth+1;
-        for(int i=0;i<N;i++) {
-            for(int j=0;j<N;j++) {
-                puzzle[i][j]=other.puzzle[i][j];
+        depth = other.depth + 1;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                puzzle[i][j] = other.puzzle[i][j];
             }
-        }        
+        }
     }
-    
+
     private int[] searchValuePosition(int value) {
-        int[] res = {-1,-1};
-        for(int i=0;i<N;i++) {
-            for(int j=0;j<N;j++) {
-                if (this.puzzle[i][j]==value) {
+        int[] res = {-1, -1};
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.puzzle[i][j] == value) {
                     res[0] = i;
                     res[1] = j;
                     return res;
@@ -72,42 +79,46 @@ public class NinePuzzle implements Comparable<NinePuzzle> {
         }
         return res;
     }
-    
-    public int getHeuristica(NinePuzzle other) {
+
+    public int getHeuristica() {
         int acum = 0;
-        int value,x,y;
+        int value, x, y;
         int[] pos;
-        for(int i=0;i<N;i++) {
-            for(int j=0;j<N;j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 value = this.puzzle[i][j];
-                pos = other.searchValuePosition(value);
-                x = Math.abs(pos[0] - i);
-                y = Math.abs(pos[1] - j);
-                acum = acum + x + y;
+                if (value != 0) {
+                    pos = solucio.searchValuePosition(value);
+                    x = Math.abs(pos[0] - i);
+                    y = Math.abs(pos[1] - j);
+                    acum = acum + x + y;
+                }
             }
         }
         return acum;
     }
-    
+
     public List<Dir> validMoves() {
         ArrayList<Dir> moves = new ArrayList<>();
-        for(Dir d:Dir.values()) {
-         if(checkPos(emptyF+d.df, emptyC+d.dc)){
-             moves.add(d);
-         }
+        for (Dir d : Dir.values()) {
+            if (checkPos(emptyF + d.df, emptyC + d.dc)) {
+                moves.add(d);
+            }
         }
         return moves;
     }
-    
-    public void move(Dir d){
+
+    public void move(Dir d) {
         move(emptyF, emptyC, d);
     }
-    
-    private void move(int f, int c, Dir d){
-        if(!checkPos(f+d.df,c+d.dc))throw new RuntimeException("Posició incorrecta"+(f+d.df)+","+(c+d.dc));
-        swap( f,c, f+d.df, c+d.dc);
-        emptyF = f+d.df;
-        emptyC = c+d.dc;
+
+    private void move(int f, int c, Dir d) {
+        if (!checkPos(f + d.df, c + d.dc)) {
+            throw new RuntimeException("Posició incorrecta" + (f + d.df) + "," + (c + d.dc));
+        }
+        swap(f, c, f + d.df, c + d.dc);
+        emptyF = f + d.df;
+        emptyC = c + d.dc;
     }
 
     private void swap(int f1, int c1, int f2, int c2) {
@@ -117,14 +128,16 @@ public class NinePuzzle implements Comparable<NinePuzzle> {
     }
 
     private boolean checkPos(int f, int c) {
-        return (f>=0 && c>=0 && f<N && c<N);
+        return (f >= 0 && c >= 0 && f < N && c < N);
     }
-    
-    public boolean isSolution(NinePuzzle other){
-        
-        for(int i=0;i<N;i++) {
-            for(int j=0;j<N;j++) {
-                if(puzzle[i][j]!=other.puzzle[i][j]) return false;
+
+    public boolean isSolution(NinePuzzle other) {
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (puzzle[i][j] != other.puzzle[i][j]) {
+                    return false;
+                }
             }
         }
         return true;
@@ -132,17 +145,17 @@ public class NinePuzzle implements Comparable<NinePuzzle> {
 
     @Override
     public String toString() {
-        String s =  "<html>id=" + id + "<br/>\n" ;
-         for(int i=0;i<N;i++) {
-            for(int j=0;j<N;j++) {
-                s += puzzle[i][j]+",";
+        String s = "<html>id=" + id + "<br/>\n";
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                s += puzzle[i][j] + ",";
             }
             s += "<br/>\n";
         }
-         s+="</html>";
+        s += "</html>";
         return s;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -166,14 +179,14 @@ public class NinePuzzle implements Comparable<NinePuzzle> {
             return false;
         }
         return true;
-    }    
+    }
 
     public NinePuzzle clone() {
-        return new NinePuzzle(this);   
+        return new NinePuzzle(this);
     }
 
     @Override
     public int compareTo(NinePuzzle t) {
-        return this.getHeuristica(t) - t.getHeuristica(this);
+        return this.getHeuristica() - t.getHeuristica();
     }
 }
