@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Usuari
  */
-public class NinePuzzle {
+public class NinePuzzle implements Comparable<NinePuzzle> {
     private static int nextId=0;
     public static void resetIds(){
         nextId=2;
@@ -45,6 +45,7 @@ public class NinePuzzle {
             }
         }
     }
+    
     public NinePuzzle(NinePuzzle other){
         this.id = ++nextId;
         puzzle = new int[N][N];      
@@ -57,8 +58,36 @@ public class NinePuzzle {
             }
         }        
     }
-
-
+    
+    private int[] searchValuePosition(int value) {
+        int[] res = {-1,-1};
+        for(int i=0;i<N;i++) {
+            for(int j=0;j<N;j++) {
+                if (this.puzzle[i][j]==value) {
+                    res[0] = i;
+                    res[1] = j;
+                    return res;
+                }
+            }
+        }
+        return res;
+    }
+    
+    public int getHeuristica(NinePuzzle other) {
+        int acum = 0;
+        int value,x,y;
+        int[] pos;
+        for(int i=0;i<N;i++) {
+            for(int j=0;j<N;j++) {
+                value = this.puzzle[i][j];
+                pos = other.searchValuePosition(value);
+                x = Math.abs(pos[0] - i);
+                y = Math.abs(pos[1] - j);
+                acum = acum + x + y;
+            }
+        }
+        return acum;
+    }
     
     public List<Dir> validMoves() {
         ArrayList<Dir> moves = new ArrayList<>();
@@ -141,5 +170,10 @@ public class NinePuzzle {
 
     public NinePuzzle clone() {
         return new NinePuzzle(this);   
+    }
+
+    @Override
+    public int compareTo(NinePuzzle t) {
+        return this.getHeuristica(t) - t.getHeuristica(this);
     }
 }
